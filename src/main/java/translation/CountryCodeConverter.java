@@ -41,7 +41,14 @@ public class CountryCodeConverter {
             while (iterator.hasNext()) {
                 String line = iterator.next();
                 String[] parts = line.split("\t");
-                // TODO Task B: use parts to populate the instance variables
+
+                if (parts.length >= 2) {
+                    String code = parts[0].trim();
+                    String country = parts[2].trim().toLowerCase();
+
+                    countryCodeToCountry.put(country, code);
+                    countryToCountryCode.put(code, country);
+                }
             }
         }
         catch (IOException | URISyntaxException ex) {
@@ -56,8 +63,8 @@ public class CountryCodeConverter {
      * @return the name of the country corresponding to the code
      */
     public String fromCountryCode(String code) {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-        return code;
+        // Steven has done this.
+        return countryCodeToCountry.get(code);
     }
 
     /**
@@ -66,8 +73,8 @@ public class CountryCodeConverter {
      * @return the 3-letter code of the country
      */
     public String fromCountry(String country) {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-        return country;
+        // Steven has done this.
+        return countryToCountryCode.get(country);
     }
 
     /**
@@ -75,7 +82,6 @@ public class CountryCodeConverter {
      * @return how many countries are included in this country code converter.
      */
     public int getNumCountries() {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-        return 0;
+        return countryCodeToCountry.size();
     }
 }
