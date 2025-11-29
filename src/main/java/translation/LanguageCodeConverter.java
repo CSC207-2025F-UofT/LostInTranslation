@@ -42,7 +42,13 @@ public class LanguageCodeConverter {
             iterator.next(); // skip the first line
             while (iterator.hasNext()) {
                 String line = iterator.next();
-                // TODO Task A: use line to populate the instance variables
+                // Task A: use line to populate the instance variables
+//                System.out.println("DEBUG line: [" + line + "]");
+                String[] languageNameCode = line.split("\t", 2);
+                String language = languageNameCode[0];
+                String code = languageNameCode[1];
+                this.languageCodeToLanguage.put(code, language);
+                this.languageToLanguageCode.put(language, code);
             }
 
         } catch (IOException | URISyntaxException ex) {
@@ -56,8 +62,8 @@ public class LanguageCodeConverter {
      * @return the name of the language corresponding to the code
      */
     public String fromLanguageCode(String code) {
-        // TODO Task A: update this code to use the correct instance variable to return the appropriate value
-        return code;
+        // Task A: update this code to use the correct instance variable to return the appropriate value
+        return languageCodeToLanguage.get(code);
     }
 
     /**
@@ -66,8 +72,8 @@ public class LanguageCodeConverter {
      * @return the 2-letter code of the language
      */
     public String fromLanguage(String language) {
-        // TODO Task A: update this code to use the correct instance variable to return the appropriate value
-        return language;
+        // Task A: update this code to use the correct instance variable to return the appropriate value
+        return languageToLanguageCode.get(language);
     }
 
     /**
