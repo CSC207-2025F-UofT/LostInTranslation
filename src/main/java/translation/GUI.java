@@ -1,7 +1,12 @@
 package translation;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // TODO Task D: Update the GUI for the program to align with UI shown in the README example.
@@ -13,17 +18,49 @@ public class GUI {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            Translator translator = new JSONTranslator();
+            LanguageCodeConverter langConv = new LanguageCodeConverter();
+            CountryCodeConverter countryConv = new CountryCodeConverter();
+
             JPanel countryPanel = new JPanel();
-            JTextField countryField = new JTextField(10);
-            countryField.setText("can");
-            countryField.setEditable(false); // we only support the "can" country code for now
             countryPanel.add(new JLabel("Country:"));
-            countryPanel.add(countryField);
+
+            java.util.List<String> alpha3List = new ArrayList<>(translator.getCountryCodes());
+            Collections.sort(alpha3List);
+            DefaultListModel<String> countryModel = new DefaultListModel<>();
+            Map<String, String> countryNameToA3 = new HashMap<>();
+            for (String a3 : alpha3List) {
+                String name = countryConv.fromCountryCode(a3);
+                if (name != null){
+                    countryModel.addElement(name);
+                    countryNameToA3.put(name, a3);
+                }
+            }
+            JList<String> countryList = new JList<>(countryModel);
+            countryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            countryList.setVisibleRowCount(5);
+            if (!countryModel.isEmpty()) countryList.setSelectedIndex(0);
+
+            JScrollPane countryScroll = new JScrollPane(countryList);
+            countryScroll.setPreferredSize(new Dimension(200, 100));
+            countryPanel.add(countryScroll);
 
             JPanel languagePanel = new JPanel();
-            JTextField languageField = new JTextField(10);
             languagePanel.add(new JLabel("Language:"));
-            languagePanel.add(languageField);
+
+            java.util.List<String> langCodes = new ArrayList<>(translator.getLanguageCodes());
+            Collections.sort(langCodes);
+            Map<String, String> langNameToCode = new HashMap<>();
+            java.util.List<String> langNames = new ArrayList<>();
+            for (String code : langCodes){
+                String name = langConv.fromLanguageCode(code);
+                if (name == null) name = code;
+                langNames.add(name);
+                langNameToCode.put(name, code);
+            }
+
+            JComboBox<String> languageBox = new JComboBox<>(langNames.toArray(new String[0]));
+            languagePanel.add(languageBox);
 
             JPanel buttonPanel = new JPanel();
             JButton submit = new JButton("Submit");
@@ -31,7 +68,7 @@ public class GUI {
 
             JLabel resultLabelText = new JLabel("Translation:");
             buttonPanel.add(resultLabelText);
-            JLabel resultLabel = new JLabel("\t\t\t\t\t\t\t");
+            JLabel resultLabel = new JLabel(" ");
             buttonPanel.add(resultLabel);
 
 
@@ -39,17 +76,20 @@ public class GUI {
             submit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String language = languageField.getText();
-                    String country = countryField.getText();
+                    String countryName = countryList.getSelectedValue();
+                    String langName = (String) languageBox.getSelectedItem();
+                    if (countryName == null || langName == null) {
+                        resultLabel.setText(" ");
+                        return;
+                    }
+                    String a3 = countryNameToA3.get(countryName);
+                    String langCode = langNameToCode.get(langName);
 
                     // for now, just using our simple translator, but
                     // we'll need to use the real JSON version later.
-                    Translator translator = new CanadaTranslator();
 
-                    String result = translator.translate(country, language);
-                    if (result == null) {
-                        result = "no translation found!";
-                    }
+                    String result = translator.translate(a3.toLowerCase(), langCode.toLowerCase());
+                    if (result == null) result = "no translation found!";
                     resultLabel.setText(result);
 
                 }
