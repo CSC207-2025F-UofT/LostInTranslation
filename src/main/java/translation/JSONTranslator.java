@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,15 +51,20 @@ public class JSONTranslator implements Translator {
                 String countryCode = countryData.getString("alpha3");
 
                 List<String> languages = new ArrayList<>();
-
+                countryCodes.add(countryCode);
                 // TODO Task C: record this countryCode in the correct instance variable
 
                 // iterate through the other keys to get the information that we need
                 for (String key : countryData.keySet()) {
                     if (!key.equals("id") && !key.equals("alpha2") && !key.equals("alpha3")) {
                         String languageCode = key;
+                        String GrandKey = countryCode + "-" + languageCode;
+                        String GrandValue = countryData.getString(key);
+                        translations.put(GrandKey,GrandValue);
                         // TODO Task C: record this translation in the appropriate instance variable
-
+                        if(!languageCodes.contains(languageCode)){
+                            languageCodes.add(languageCode);
+                        }
                         if (!languages.contains(languageCode)) {
                             languages.add(languageCode);
                         }
@@ -74,7 +80,7 @@ public class JSONTranslator implements Translator {
     @Override
     public List<String> getLanguageCodes() {
         // TODO Task C: return a copy of the language codes
-        return new ArrayList<>();
+        return new ArrayList<>(languageCodes);
     }
 
     @Override
@@ -85,6 +91,5 @@ public class JSONTranslator implements Translator {
     @Override
     public String translate(String countryCode, String languageCode) {
         // TODO Task C: complete this method using your instance variables as needed
-        return "JSONTranslator's translate method is not implemented!";
     }
 }
