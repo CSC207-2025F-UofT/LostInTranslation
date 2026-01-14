@@ -3,9 +3,6 @@ package translation;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Task 1: as a team, update this class so that it also supports the Spanish language code "es" and
-//              one more language code of your team's choice. Submit a PR once the code is working and
-//              make sure everyone has a local working copy of the code.
 
 /**
  * An implementation of the Translator interface that translates
@@ -22,7 +19,7 @@ public class CanadaTranslator implements Translator {
      */
     @Override
     public List<String> getLanguageCodes() {
-        return new ArrayList<>(List.of("de", "en", "zh"));
+        return new ArrayList<>(List.of("de", "en", "zh", "es", "fr"));
     }
 
     /**
@@ -43,6 +40,7 @@ public class CanadaTranslator implements Translator {
      * @param languageCode the 2-letter language code
      * @return the name of the country in the given language or null if no translation is available
      */
+
     @Override
     public String translate(String countryCode, String languageCode) {
         if (!countryCode.equals(CANADA)) {
@@ -56,6 +54,12 @@ public class CanadaTranslator implements Translator {
         }
         else if ("zh".equals(languageCode)) {
             return "加拿大";
+        }
+        else if ("es".equals(languageCode)) {
+            return "Canadá";
+        }
+        else if ("fr".equals(languageCode)) {
+            return "Canada";
         }
         else {
             return null;
